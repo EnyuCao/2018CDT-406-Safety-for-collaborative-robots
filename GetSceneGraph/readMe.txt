@@ -14,5 +14,5 @@ Note:
 	sudo pip install shapely
 
 2.The "rosInterfaceControlledBubbleRob" is from V-REP tutorial. It is simple, so start with playing with it. But it doesn't have arm. Delete it when you know you are familiar with V-REP.
-3."vrep_obst_extractor.py" need to be adjust for your use case.
+3."vrep_obst_extractor.py" need to be adjusted for your use case.
 
