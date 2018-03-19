@@ -9,5 +9,10 @@ RUN this demo:
 1. Open draft_of_warehouse_ without_scripts.ttt with VREP and start the simulation
 2. Run vrep_obst_extractor.py 
 
-Note: install necessary package if required. Such as: 
+Note: 
+1.install necessary package if required. Such as: 
 	sudo pip install shapely
+
+2.The "rosInterfaceControlledBubbleRob" is from V-REP tutorial. It is simple, so start with playing with it. But it doesn't have arm. Delete it when you know you are familiar with V-REP.
+3."vrep_obst_extractor.py" need to be adjust for your use case.
+

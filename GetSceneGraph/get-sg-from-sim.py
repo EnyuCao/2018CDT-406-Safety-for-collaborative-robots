@@ -65,7 +65,10 @@ if clientID!=-1:
         returnCode, objects_handles,  parent_object_handles, objects_orientations, stringData=vrep.simxGetObjectGroupData(clientID,objectType,dataType,operationMode) 
 
         # get indexes of relevant elements in the warehouse
-        obj_list = ['ConveyorBelt_forwarder', 'ConveyorBeltBody', 'Waypoint_CB', 'ShelfBody', 'TagShelf', 'DockStationBody', 'Bill', 'turtlebot2i', 'product', 'slidingDoor', 'stairs']
+#*********************************************************************	
+	# ADJUST THE LIST FOR YOUR PROJECT.	
+        obj_list = ['ConveyorBelt_forwarder', 'ConveyorBeltBody', 'Waypoint_CB', 'ShelfBody', 'TagShelf', 'DockStationBody', 'Bill',  'product', 'slidingDoor', 'stairs'] 
+#*********************************************************************
         obj_index_list = [objects_names.index(i) for i in objects_names if re.match(r'(#\d|)\b|'.join(obj_list)+'*', i)]
 
 
