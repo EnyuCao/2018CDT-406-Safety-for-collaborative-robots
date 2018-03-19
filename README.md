@@ -6,4 +6,4 @@ This is an initial repo, and some files might be missing.
 
 Please contact me by posing a issue here. But we will only solve bugs and give you limited help.
 
-Please upload your code about algorithm in the SOLUTION folder.
+Please upload your code about algorithm in the StudentCode folder.
