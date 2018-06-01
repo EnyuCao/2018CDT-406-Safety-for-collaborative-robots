@@ -1,33 +1,23 @@
-function [Speed]= FuzzyEval2(vrep, clientID, myNet, FuzzySpeed, image)
-mode = vrep.simx_opmode_blocking;
-    
-%% Get Handles from sensors of interest
-    [~,front_sensor]=vrep.simxGetObjectHandle(clientID,'front_sensor',mode);
-    [~,back_sensor]=vrep.simxGetObjectHandle(clientID,'back_sensor',mode);
-    [~,left_sensor]=vrep.simxGetObjectHandle(clientID,'left_sensor',mode);
-    [~,right_sensor]=vrep.simxGetObjectHandle(clientID,'right_sensor',mode);
-    [~,camera]=vrep.simxGetObjectHandle(clientID,'Vision_sensor',mode);
-   
-%% Initiate Sensors
-    [~,~,fRead,~,~]=vrep.simxReadProximitySensor(clientID,front_sensor,vrep.simx_opmode_streaming);
-    [~,~,bRead,~,~]=vrep.simxReadProximitySensor(clientID,back_sensor,vrep.simx_opmode_streaming);
-    [~,~,lRead,~,~]=vrep.simxReadProximitySensor(clientID,left_sensor,vrep.simx_opmode_streaming);
-    [~,~,rRead,~,~]=vrep.simxReadProximitySensor(clientID,right_sensor,vrep.simx_opmode_streaming);
-%% Identify If person
-	[~,resolution,image]=vrep.simxGetVisionSensorImage2(clientID,camera,0,vrep.simx_opmode_buffer);
-    image = imresize(image, [227 227]);
-    [output,scores] = classify(myNet, image);
-       
-%% Sensor read
-    [~,~,fRead,~,~]=vrep.simxReadProximitySensor(clientID,front_sensor,vrep.simx_opmode_buffer);
-    [~,~,bRead,~,~]=vrep.simxReadProximitySensor(clientID,back_sensor,vrep.simx_opmode_buffer);
-    [~,~,lRead,~,~]=vrep.simxReadProximitySensor(clientID,left_sensor,vrep.simx_opmode_buffer);
-    [~,~,rRead,~,~]=vrep.simxReadProximitySensor(clientID,right_sensor,vrep.simx_opmode_buffer);
+function [Speed,output]= FuzzyEval2(vrep, clientID, myNet, FuzzySpeed, sensorhandles)
+% this function determins the speed of the robot and if a human is detected
+% or not detected by the robot camera.
+mode = vrep.simx_opmode_buffer;
+%% Identify If person       
+	[~,~,image]=vrep.simxGetVisionSensorImage2(clientID,sensorhandles(9),0,vrep.simx_opmode_buffer); % read image from the camera 
+    image = imresize(image, [227 227]); % resize the image 
+    [output,scores] = classify(myNet, image);  % output,  detected or not 
+%% Sensor read              
+    [~,~,fRead,~,~]=vrep.simxReadProximitySensor(clientID,sensorhandles(1),mode);
+    [~,~,bRead,~,~]=vrep.simxReadProximitySensor(clientID,sensorhandles(5),mode);
+    [~,~,lRead,~,~]=vrep.simxReadProximitySensor(clientID,sensorhandles(7),mode);
+    [~,~,rRead,~,~]=vrep.simxReadProximitySensor(clientID,sensorhandles(3),mode);
+    %%% distances of all sensors to an object or a person
     fDist = norm(fRead);
     rDist = norm(rRead);
     lDist = norm(lRead);
     bDist = norm(bRead);
-       
+      
+
     % very high or low values when not detecting. If so, the value is set to the maximum possible distance
     if (fDist < 1e-3 || fDist > 1.5)
        fDist = 1.5;
@@ -41,8 +31,8 @@ mode = vrep.simx_opmode_blocking;
     if (bDist < 1e-3 || bDist > 0.8)
        bDist = 0.8;
     end
-
-%% Safety measures (Fuzzy)
+    
+%% Safety measures (Fuzzy)  
     if max(scores) == scores(2) %Front
        FaceDirection = 0.5+max(scores);
     else
@@ -51,12 +41,13 @@ mode = vrep.simx_opmode_blocking;
 
     %Accuire speed from Fuzzy function
     [Speed, ~] = evalfis([double(FaceDirection),double(fDist),double(lDist),double(rDist),double(bDist)],FuzzySpeed);
-
-    %Possible negative speed, but we only wantv positive speed for the current purpose
+    
+    %Possible negative speed, but we only want positive speed for the current purpose
     if Speed < 0
        Speed = 0;
     end
-    Speed = Speed/15;
-%     disp('Speed');disp(Speed);
+    Speed = Speed/10; % return speed to diffe 
+
+
 end
 

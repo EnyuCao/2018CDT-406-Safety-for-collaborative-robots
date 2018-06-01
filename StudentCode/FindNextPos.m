@@ -1,4 +1,5 @@
 function [wanted] = FindNextPos(i,j,travel2,map,gi,gj)
+% returns the angle that the robot needs to rotate towards
     wanted = -4;
     %ap = adjacent position
     ap(1,:) = [i-1,j];

@@ -72,4 +72,4 @@ function [matrixdir] = getrobotsurroundings(states, robor)
         matrixdir(7) = states(2);
         matrixdir(8) = states(3);
     end
-end
+end%Define the objects positions with respect to the current orientation of the robot
